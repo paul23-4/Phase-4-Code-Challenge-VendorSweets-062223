@@ -1,55 +1,41 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import MetaData
-from sqlalchemy.orm import validates
-from sqlalchemy.ext.associationproxy import association_proxy
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
 from sqlalchemy_serializer import SerializerMixin
 
-metadata = MetaData(naming_convention={
-    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
-})
-
-db = SQLAlchemy(metadata=metadata)
-
+db = SQLAlchemy()
 
 class Sweet(db.Model, SerializerMixin):
     __tablename__ = 'sweets'
-
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
 
-    # Add relationship
-    
-    # Add serialization
-    
-    def __repr__(self):
-        return f'<Sweet {self.id}>'
+    vendor_sweets = relationship("VendorSweet", back_populates="sweet")
 
+    def __repr__(self):
+        return f'<Sweet {self.name}>'
 
 class Vendor(db.Model, SerializerMixin):
     __tablename__ = 'vendors'
-
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String(100), nullable=False)
 
-    # Add relationship
-    
-    # Add serialization
-    
+    vendor_sweets = relationship("VendorSweet", back_populates="vendor")
+
     def __repr__(self):
-        return f'<Vendor {self.id}>'
-
+        return f'<Vendor {self.name}>'
 
 class VendorSweet(db.Model, SerializerMixin):
     __tablename__ = 'vendor_sweets'
-
     id = db.Column(db.Integer, primary_key=True)
-    price = db.Column(db.Integer, nullable=False)
+    price = db.Column(db.Float, nullable=False)
 
-    # Add relationships
-    
-    # Add serialization
-    
-    # Add validation
-    
+    vendor_id = db.Column(db.Integer, ForeignKey('vendors.id'), nullable=False)
+    sweet_id = db.Column(db.Integer, ForeignKey('sweets.id'), nullable=False)
+
+    vendor = relationship("Vendor", back_populates="vendor_sweets")
+    sweet = relationship("Sweet", back_populates="vendor_sweets")
+
     def __repr__(self):
-        return f'<VendorSweet {self.id}>'
+        return f'<VendorSweet {self.price}>'
+

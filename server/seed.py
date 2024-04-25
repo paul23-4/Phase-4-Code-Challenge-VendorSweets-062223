@@ -1,6 +1,6 @@
 from random import choice as rc, randrange
-
 from app import app
+
 from models import db, Sweet, Vendor, VendorSweet
 
 if __name__ == '__main__':
@@ -9,7 +9,6 @@ if __name__ == '__main__':
         Vendor.query.delete()
         Sweet.query.delete()
         VendorSweet.query.delete()
-
         print("Seeding vendors...")
         vendors = [
             Vendor(name="Insomnia Cookies"),
@@ -18,11 +17,8 @@ if __name__ == '__main__':
             Vendor(name="Gregory's Coffee"),
             Vendor(name="Duane Park Patisserie"),
             Vendor(name="Tribeca Treats"),
-
         ]
-
         db.session.add_all(vendors)
-
         print("Seeding sweets...")
         sweets = [
             Sweet(name="Chocolate Chip Cookie"),
@@ -32,9 +28,7 @@ if __name__ == '__main__':
             Sweet(name="Brownie"),
             Sweet(name="Peanut Butter Icecream Cake"),
         ]
-
         db.session.add_all(sweets)
-
         print("Seeding vendor sweets...")
         vendor_sweets = []
         for sweet in sweets:
@@ -44,5 +38,4 @@ if __name__ == '__main__':
             )
         db.session.add_all(vendor_sweets)
         db.session.commit()
-
         print("Done seeding!")
